@@ -5,22 +5,27 @@ import {
   ActionIcon,
   Center,
   Container,
-  Flex,
   Group,
-  List,
+  Input,
+  Kbd,
   Pagination,
   Stack,
   Title,
   useMantineColorScheme,
 } from '@mantine/core'
 import ReleaseCard from '@/components/ReleaseCard'
-import { useEffect, useState } from 'react'
-import { IconMoonStars, IconSun } from '@tabler/icons-react'
+import { useEffect, useRef, useState } from 'react'
+import { IconMoonStars, IconSearch, IconSun } from '@tabler/icons-react'
+import { useHotkeys } from '@mantine/hooks'
 
 export default function Main() {
   const [activePage, setActivePage] = useState(1)
   const [perPage, setPerPage] = useState(15)
+
+  const searchBarRef = useRef<HTMLInputElement>(null)
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
+
+  useHotkeys([['mod+K', () => searchBarRef.current?.focus()]])
 
   const fetcher = (url: string, params: { per_page: number; page: number }) =>
     fetch(`${url}?per_page=${params.per_page}&page=${params.page}`).then((r) => r.json())
@@ -70,6 +75,20 @@ export default function Main() {
         </Group>
 
         <Stack align='stretch' justify='center'>
+          <Input
+            ref={searchBarRef}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            icon={<IconSearch size='16' />}
+            placeholder='Search'
+            size='md'
+            radius='md'
+            rightSectionWidth={90}
+            rightSection={<Kbd>⌘ + K</Kbd>}
+          />
+
           {data.map((release) => (
             <div key={release.id}>
               <ReleaseCard release={release} />
