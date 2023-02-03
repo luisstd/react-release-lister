@@ -50,7 +50,7 @@ export default function Main() {
         />
       </Head>
 
-      <Container p='md' style={{ width: '80%' }}>
+      <Container p='md' size='sm' style={{ width: '85%' }}>
         <Group position='apart'>
           <Title order={1}>React Releases</Title>
 
