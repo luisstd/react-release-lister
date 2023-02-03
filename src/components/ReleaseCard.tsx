@@ -1,5 +1,18 @@
 import Release from '@/types/release'
-import { Card, Avatar, Text, Badge, Group, Anchor, Stack, Title, Code } from '@mantine/core'
+import {
+  Card,
+  Avatar,
+  Text,
+  Badge,
+  Group,
+  Anchor,
+  Stack,
+  Title,
+  Code,
+  ActionIcon,
+  Button,
+} from '@mantine/core'
+import { IconDownload } from '@tabler/icons-react'
 
 type ReleaseCardProps = {
   release: Release
@@ -21,11 +34,23 @@ function ReleaseCard({ release }: ReleaseCardProps) {
         </Group>
 
         <Title order={1}>{release.name}</Title>
+      </Stack>
 
+      <Stack mt='md'>
         <Anchor href={release.html_url}>
-          <Code>ID: {release.id}</Code>
+          <Code mt='xl'>ID: {release.id}</Code>
         </Anchor>
       </Stack>
+
+      <Button
+        mt='md'
+        component='a'
+        href={release.zipball_url}
+        variant='subtle'
+        leftIcon={<IconDownload size={14} />}
+      >
+        <Code>ZIP</Code>
+      </Button>
     </Card>
   )
 }
