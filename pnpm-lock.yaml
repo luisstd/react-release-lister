@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@emotion/react': ^11.10.5
   '@emotion/server': ^11.10.0
+  '@formkit/auto-animate': 1.0.0-beta.6
   '@mantine/core': ^5.10.3
   '@mantine/hooks': ^5.10.3
   '@mantine/next': ^5.10.3
@@ -24,6 +25,7 @@ specifiers:
 dependencies:
   '@emotion/react': 11.10.5_yxdp3dl3eazy3vwpbmv4fq727a
   '@emotion/server': 11.10.0
+  '@formkit/auto-animate': 1.0.0-beta.6
   '@mantine/core': 5.10.3_ylq7zkqz7uvrjy7wd5cseqyxu4
   '@mantine/hooks': 5.10.3_react@18.2.0
   '@mantine/next': 5.10.3_frkyvidol3cyjondljhrqtyp5u
@@ -431,6 +433,10 @@ packages:
       tabbable: 6.0.1
     transitivePeerDependencies:
       - '@types/react'
+    dev: false
+
+  /@formkit/auto-animate/1.0.0-beta.6:
+    resolution: {integrity: sha512-PVDhLAlr+B4Xb7e+1wozBUWmXa6BFU8xUPR/W/E+TsQhPS1qkAdAsJ25keEnFrcePSnXHrOsh3tiFbEToOzV9w==}
     dev: false
 
   /@humanwhocodes/config-array/0.11.8:

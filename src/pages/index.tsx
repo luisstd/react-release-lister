@@ -17,6 +17,7 @@ import ReleaseCard from '@/components/ReleaseCard'
 import { useEffect, useRef, useState } from 'react'
 import { IconMoonStars, IconSearch, IconSun } from '@tabler/icons-react'
 import { useHotkeys } from '@mantine/hooks'
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 
 export default function Main() {
   const [activePage, setActivePage] = useState(1)
@@ -24,6 +25,7 @@ export default function Main() {
 
   const searchBarRef = useRef<HTMLInputElement>(null)
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
+  const [parent] = useAutoAnimate()
 
   useHotkeys([['mod+K', () => searchBarRef.current?.focus()]])
 
@@ -74,7 +76,7 @@ export default function Main() {
           </Group>
         </Group>
 
-        <Stack align='stretch' justify='center'>
+        <Stack align='stretch' justify='center' ref={parent}>
           <Input
             ref={searchBarRef}
             style={{
