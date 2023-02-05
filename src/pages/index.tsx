@@ -12,11 +12,10 @@ import {
   Input,
   Kbd,
   Stack,
-  Title,
   Text,
   useMantineTheme,
 } from '@mantine/core'
-import { useHotkeys } from '@mantine/hooks'
+import { useDebouncedValue, useHotkeys } from '@mantine/hooks'
 import { IconSearch } from '@tabler/icons-react'
 
 import Release from '@/types/release'
@@ -34,65 +33,27 @@ export default function Main() {
   const fetcher = (url: string) => fetch(url).then((res) => res.json())
   const PAGE_SIZE = 15
 
-  const [searchQuery, setSearchQuery] = useState('')
+  const [search, setSearch] = useState('')
+  const [debouncedSearch] = useDebouncedValue(search, 300)
+
   const searchBarRef = useRef<HTMLInputElement>(null)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-  }
-
-  // allows filtering for author name, release name/date and exact release id
-  const searchFilter = (releases: Release[]) => {
-    return releases.filter(
-      (el) =>
-        el.author.login.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        el.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        el.id.toString() === searchQuery
-    )
+    setSearch(e.target.value)
   }
 
   useHotkeys([['mod+K', () => searchBarRef.current?.focus()]])
 
-  // fetches paginated results from github API
+  // fetches paginated results from github API & allows filtering for author name, release name/date and exact release id
   const { data, mutate, size, setSize, isValidating, isLoading, error } = useSWRInfinite(
-    (index) => `/api/releases?per_page=${PAGE_SIZE}&page=${index + 1}`,
+    (index) => `/api/releases?per_page=${PAGE_SIZE}&page=${index + 1}&search=${debouncedSearch}`,
     fetcher
   )
 
-  const releases = searchFilter(data ? [].concat(...data) : [])
+  const releases = data ? [].concat(...data) : []
   const isEmpty = data?.[0]?.length === 0
   const isLoadingMore = isLoading || (size > 0 && data && typeof data[size - 1] === 'undefined')
   const isReachingEnd = isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE)
   const isRefreshing = isValidating && data && data.length === size
-
-  if (error)
-    return (
-      <Center style={{ width: '100%', height: '80vh' }}>
-        <Code>
-          <Title px='sm' order={2}>
-            Failed to load users
-          </Title>
-        </Code>
-      </Center>
-    )
-  if (isLoading)
-    return (
-      <Center style={{ width: '100%', height: '80vh' }}>
-        <DotLoader color={theme.colors.blue[6]} />
-        <Code mx='xl'>
-          <Title px={'sm'} order={2}>
-            Loading...
-          </Title>
-        </Code>
-      </Center>
-    )
-  if (!data)
-    return (
-      <Center style={{ width: '100%', height: '80vh' }}>
-        <Code px='sm'>
-          <Title order={2}>No data</Title>
-        </Code>
-      </Center>
-    )
 
   return (
     <>
@@ -120,11 +81,38 @@ export default function Main() {
             onChange={handleChange}
           />
 
-          {releases.map((release: Release) => (
-            <div key={release.id}>
-              <ReleaseCard release={release} />
-            </div>
-          ))}
+          {isLoading ? (
+            <Center style={{ width: '100%', height: '80vh' }}>
+              <DotLoader color={theme.colors.blue[6]} />
+              <Code mx='xl'>
+                <Text px={'sm'} size='xl'>
+                  Loading...
+                </Text>
+              </Code>
+            </Center>
+          ) : (
+            releases.map((release: Release) => (
+              <div key={release.id}>
+                <ReleaseCard release={release} />
+              </div>
+            ))
+          )}
+
+          {error ? (
+            <Center style={{ width: '100%', height: '80vh' }}>
+              <Code>
+                <Text px='sm' size='xl'>
+                  Failed to load users
+                </Text>
+              </Code>
+            </Center>
+          ) : !data ? (
+            <Center style={{ width: '100%', height: '80vh' }}>
+              <Code px='sm'>
+                <Text size='xl'>No data</Text>
+              </Code>
+            </Center>
+          ) : null}
 
           <Group position='center' align='center'>
             <Text>
