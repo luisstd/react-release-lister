@@ -37,9 +37,9 @@ function ReleaseCard({ release }: ReleaseCardProps) {
           {release.name.length ? (
             release.name
           ) : (
-            <Title order={2} italic>
+            <Text size='xl' italic>
               No name provided
-            </Title>
+            </Text>
           )}
         </Title>
       </Stack>
