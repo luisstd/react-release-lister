@@ -1,8 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import type { NextApiRequest, NextApiResponse } from 'next'
+
+import Error from '@/types/error'
 import Release from '@/types/release'
 import ResponseError from '@/types/responseError'
-import Error from '@/types/error'
-import type { NextApiRequest, NextApiResponse } from 'next'
 
 async function handler(req: NextApiRequest, res: NextApiResponse<Release | ResponseError | Error>) {
   const { per_page, page } = req.query
