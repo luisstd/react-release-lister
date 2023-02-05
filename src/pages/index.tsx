@@ -121,7 +121,7 @@ export default function Main() {
             </Text>
             <Group>
               <Button disabled={isLoadingMore || isReachingEnd} onClick={() => setSize(size + 1)}>
-                {isLoadingMore ? 'Loading...' : isReachingEnd ? 'No more issues' : 'Load more'}
+                {isLoadingMore ? 'Loading...' : isReachingEnd ? 'No more releases' : 'Load more'}
               </Button>
               <Button disabled={isRefreshing} onClick={() => mutate()}>
                 {isRefreshing ? 'Refreshing...' : 'Refresh'}
