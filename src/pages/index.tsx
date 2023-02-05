@@ -58,7 +58,7 @@ export default function Main() {
     fetcher
   )
 
-  const releases = data ? [].concat(...data) : []
+  const releases = searchFilter(data ? [].concat(...data) : [])
   const isEmpty = data?.[0]?.length === 0
   const isLoadingMore = isLoading || (size > 0 && data && typeof data[size - 1] === 'undefined')
   const isReachingEnd = isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE)
