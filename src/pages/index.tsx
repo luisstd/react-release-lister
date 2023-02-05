@@ -1,17 +1,19 @@
 import Head from 'next/head'
-import useSWR, { mutate } from 'swr'
-import { useEffect, useRef, useState } from 'react'
+import useSWRInfinite from 'swr/infinite'
+
+import { useRef, useState } from 'react'
 
 import {
+  Button,
   Center,
   Code,
   Container,
   Group,
   Input,
   Kbd,
-  Pagination,
   Stack,
   Title,
+  Text,
   useMantineTheme,
 } from '@mantine/core'
 import { useHotkeys } from '@mantine/hooks'
@@ -29,8 +31,8 @@ export default function Main() {
 
   const [parent] = useAutoAnimate()
 
-  const [activePage, setActivePage] = useState(1)
-  const [perPage] = useState(15)
+  const fetcher = (url: string) => fetch(url).then((res) => res.json())
+  const PAGE_SIZE = 15
 
   const [searchQuery, setSearchQuery] = useState('')
   const searchBarRef = useRef<HTMLInputElement>(null)
@@ -50,17 +52,17 @@ export default function Main() {
 
   useHotkeys([['mod+K', () => searchBarRef.current?.focus()]])
 
-  useEffect(() => {
-    mutate('/api/releases')
-  }, [activePage])
-
   // fetches paginated results from github API
-  const fetcher = (url: string, params: { per_page: number; page: number }) =>
-    fetch(`${url}?per_page=${params.per_page}&page=${params.page}`).then((r) => r.json())
-
-  const { data, error, isLoading } = useSWR<Release[]>(`/api/releases`, () =>
-    fetcher('/api/releases', { per_page: perPage, page: activePage })
+  const { data, mutate, size, setSize, isValidating, isLoading, error } = useSWRInfinite(
+    (index) => `/api/releases?per_page=${PAGE_SIZE}&page=${index + 1}`,
+    fetcher
   )
+
+  const releases = data ? [].concat(...data) : []
+  const isEmpty = data?.[0]?.length === 0
+  const isLoadingMore = isLoading || (size > 0 && data && typeof data[size - 1] === 'undefined')
+  const isReachingEnd = isEmpty || (data && data[data.length - 1]?.length < PAGE_SIZE)
+  const isRefreshing = isValidating && data && data.length === size
 
   if (error)
     return (
@@ -92,8 +94,6 @@ export default function Main() {
       </Center>
     )
 
-  const filteredReleases = searchFilter(data)
-
   return (
     <>
       <Head>
@@ -120,13 +120,29 @@ export default function Main() {
             onChange={handleChange}
           />
 
-          {filteredReleases.map((release) => (
+          {releases.map((release: Release) => (
             <div key={release.id}>
               <ReleaseCard release={release} />
             </div>
           ))}
-          <Group position='center'>
-            <Pagination radius='sm' page={activePage} onChange={setActivePage} total={2} />
+
+          <Group position='center' align='center'>
+            <Text>
+              showing {size} page(s) of {isLoadingMore ? '...' : releases.length} releases
+            </Text>
+            <Group>
+              <Button disabled={isLoadingMore || isReachingEnd} onClick={() => setSize(size + 1)}>
+                {isLoadingMore ? 'Loading...' : isReachingEnd ? 'No more issues' : 'Load more'}
+              </Button>
+              <Button disabled={isRefreshing} onClick={() => mutate()}>
+                {isRefreshing ? 'Refreshing...' : 'Refresh'}
+              </Button>
+              <Button disabled={!size} onClick={() => setSize(0)} variant='light'>
+                Clear
+              </Button>
+            </Group>
+
+            {isEmpty ? <Text>No releases found</Text> : null}
           </Group>
         </Stack>
       </Container>
