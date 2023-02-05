@@ -22,6 +22,7 @@ import { useAutoAnimate } from '@formkit/auto-animate/react'
 export default function Main() {
   const [activePage, setActivePage] = useState(1)
   const [perPage, setPerPage] = useState(15)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const searchBarRef = useRef<HTMLInputElement>(null)
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
@@ -43,6 +44,22 @@ export default function Main() {
   if (error) return <Center>Failed to load users</Center>
   if (isLoading) return <Center>Loading...</Center>
   if (!data) return <Center>No data</Center>
+
+  // allows filtering for author name, release name and exact release id
+  const searchFilter = (releases: Release[]) => {
+    return releases.filter(
+      (el) =>
+        el.author.login.includes(searchQuery) ||
+        el.name.includes(searchQuery) ||
+        el.id.toString() === searchQuery
+    )
+  }
+
+  const filteredReleases = searchFilter(data)
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+  }
 
   return (
     <>
@@ -89,9 +106,10 @@ export default function Main() {
             radius='md'
             rightSectionWidth={90}
             rightSection={<Kbd>⌘ + K</Kbd>}
+            onChange={handleChange}
           />
 
-          {data.map((release) => (
+          {filteredReleases.map((release) => (
             <div key={release.id}>
               <ReleaseCard release={release} />
             </div>
