@@ -21,7 +21,7 @@ import { useAutoAnimate } from '@formkit/auto-animate/react'
 
 export default function Main() {
   const [activePage, setActivePage] = useState(1)
-  const [perPage, setPerPage] = useState(15)
+  const [perPage] = useState(15)
   const [searchQuery, setSearchQuery] = useState('')
 
   const searchBarRef = useRef<HTMLInputElement>(null)
@@ -45,12 +45,12 @@ export default function Main() {
   if (isLoading) return <Center>Loading...</Center>
   if (!data) return <Center>No data</Center>
 
-  // allows filtering for author name, release name and exact release id
+  // allows filtering for author name, release name/date and exact release id
   const searchFilter = (releases: Release[]) => {
     return releases.filter(
       (el) =>
-        el.author.login.includes(searchQuery) ||
-        el.name.includes(searchQuery) ||
+        el.author.login.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        el.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         el.id.toString() === searchQuery
     )
   }
