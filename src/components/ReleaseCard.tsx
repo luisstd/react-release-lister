@@ -34,7 +34,13 @@ function ReleaseCard({ release }: ReleaseCardProps) {
         </Group>
 
         <Title mb='md' order={1}>
-          {release.name}
+          {release.name.length ? (
+            release.name
+          ) : (
+            <Title order={2} italic>
+              No name provided
+            </Title>
+          )}
         </Title>
       </Stack>
 
