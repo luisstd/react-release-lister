@@ -1,6 +1,8 @@
 import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core'
 import { useHotkeys, useLocalStorage } from '@mantine/hooks'
 import type { AppProps } from 'next/app'
+import '@fontsource/montserrat/variable.css'
+import '@fontsource/montserrat/variable-italic.css'
 
 export default function App({ Component, pageProps }: AppProps) {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
@@ -21,9 +23,9 @@ export default function App({ Component, pageProps }: AppProps) {
         withNormalizeCSS
         theme={{
           colorScheme: colorScheme,
-          fontFamily: 'Satoshi, sans-serif',
+          fontFamily: 'Montserrat, sans-serif',
           headings: {
-            fontFamily: 'Cabinet Grotesk, sans-serif',
+            fontFamily: 'Montserrat, sans-serif',
           },
         }}
       >
