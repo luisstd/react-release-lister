@@ -46,7 +46,8 @@ export default function Main() {
   // fetches paginated results from github API & allows filtering for author name, release name/date and exact release id
   const { data, mutate, size, setSize, isValidating, isLoading, error } = useSWRInfinite(
     (index) => `/api/releases?per_page=${PAGE_SIZE}&page=${index + 1}&search=${debouncedSearch}`,
-    fetcher
+    fetcher,
+    { initialSize: 1, persistSize: true }
   )
 
   const releases = data ? [].concat(...data) : []
