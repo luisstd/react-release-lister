@@ -33,7 +33,9 @@ function ReleaseCard({ release }: ReleaseCardProps) {
           </Group>
         </Group>
 
-        <Title order={1}>{release.name}</Title>
+        <Title mb='md' order={1}>
+          {release.name}
+        </Title>
       </Stack>
 
       <Stack mt='md'>
