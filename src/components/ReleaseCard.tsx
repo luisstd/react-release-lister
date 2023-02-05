@@ -1,17 +1,5 @@
 import Release from '@/types/release'
-import {
-  Card,
-  Avatar,
-  Text,
-  Badge,
-  Group,
-  Anchor,
-  Stack,
-  Title,
-  Code,
-  ActionIcon,
-  Button,
-} from '@mantine/core'
+import { Card, Avatar, Text, Badge, Group, Anchor, Stack, Title, Code, Button } from '@mantine/core'
 import { IconDownload } from '@tabler/icons-react'
 
 type ReleaseCardProps = {
